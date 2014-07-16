@@ -16,6 +16,7 @@
         "indigophp/supervisor": "dev-develop",
         "zendframework/zend-servicemanager": "2.*",
         "zendframework/zend-modulemanager": "2.*",
+        "zendframework/zend-mvc": "2.*",
         "guzzlehttp/guzzle": "4.*"
     },
     "require-dev": {
