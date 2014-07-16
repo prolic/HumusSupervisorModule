@@ -45,6 +45,6 @@ Usage
 Make use of your supervisor:
 
 ``` php
-$supervisor = $serviceManager->get('my-supervisor);
+$supervisor = $serviceManager->get('my-supervisor');
 $supervisor->isRunning();
 ```
