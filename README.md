@@ -48,3 +48,19 @@ Make use of your supervisor:
 $supervisor = $serviceManager->get('my-supervisor');
 $supervisor->isRunning();
 ```
+
+Supervisord Installation
+------------------------
+
+wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python
+sudo easy_install supervisor
+
+For configuration of supervisord see: http://supervisord.org/configuration.html
+
+start with
+
+    supervisord
+
+or to run no-daemon
+
+    supervisord -n
