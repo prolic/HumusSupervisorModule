@@ -25,19 +25,23 @@ Configuration
 
 Change your application configuration like this:
 
-    'humus_supervisor_module' => array(
-        'my-supervisor' => array(
-            'host' => 'localhost',
-            'port' => 19005,
-            'username' => 'user',
-            'password' => '123'
-        )
+``` php
+'humus_supervisor_module' => array(
+    'my-supervisor' => array(
+        'host' => 'localhost',
+        'port' => 19005,
+        'username' => 'user',
+        'password' => '123'
     )
+)
+```
 
 Usage
 -----
 
 Make use of your supervisor:
 
-    $supervisor = $serviceManager->get('my-supervisor);
-    $supervisor->isRunning();
+``` php
+$supervisor = $serviceManager->get('my-supervisor);
+$supervisor->isRunning();
+```
