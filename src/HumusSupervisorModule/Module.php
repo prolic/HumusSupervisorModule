@@ -5,11 +5,12 @@ namespace HumusSupervisorModule;
 use Indigo\Supervisor\Connector\ZendConnector;
 use Indigo\Supervisor\Supervisor;
 use Zend\EventManager\EventInterface;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\XmlRpc\Client;
 
-class Module implements BootstrapListenerInterface, ConfigProviderInterface
+class Module implements AutoloaderProviderInterface, BootstrapListenerInterface, ConfigProviderInterface
 {
     public function getConfig()
     {
@@ -40,5 +41,24 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface
                 return $supervisor;
             });
         }
+    }
+
+    /**
+     * Return an array for passing to Zend\Loader\AutoloaderFactory.
+     *
+     * @return array
+     */
+    public function getAutoloaderConfig()
+    {
+        return array(
+            'Zend\Loader\ClassMapAutoloader' => array(
+                __DIR__ . '/../../autoload_classmap.php',
+            ),
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    __NAMESPACE__ => __DIR__,
+                ),
+            ),
+        );
     }
 }
