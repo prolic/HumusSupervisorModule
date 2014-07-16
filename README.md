@@ -52,8 +52,8 @@ $supervisor->isRunning();
 Supervisord Installation
 ------------------------
 
-wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python
-sudo easy_install supervisor
+    wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python
+    sudo easy_install supervisor
 
 For configuration of supervisord see: http://supervisord.org/configuration.html
 
