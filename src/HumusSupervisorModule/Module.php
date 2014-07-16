@@ -36,7 +36,7 @@ class Module implements AutoloaderProviderInterface, BootstrapListenerInterface,
         $moduleConfig = $config['humus_supervisor_module'];
 
         foreach ($moduleConfig as $name => $connectionSettings) {
-            $serviceManager->setFactory($name, function($sm) use ($connectionSettings) {
+            $serviceManager->setFactory($name, function() use ($connectionSettings) {
                 $port = isset($connectionSettings['port']) ? ':' . $connectionSettings['port'] : '';
 
                 $connector = new GuzzleConnector(new Client(array(
