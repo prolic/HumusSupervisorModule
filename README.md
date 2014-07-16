@@ -6,7 +6,7 @@ Humus Supervisor Module
 [![Code Coverage](https://scrutinizer-ci.com/g/prolic/HumusSupervisorModule/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/prolic/HumusSupervisorModule/?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/53c670c8a54f97c98f000002/badge.svg?style=flat)](https://www.versioneye.com/user/projects/53c670c8a54f97c98f000002)
 
-Humus Supervisor Module is a Module for Zend Framework 2 based on supervisord.
+Humus Supervisor Module is a module for Zend Framework 2 based on supervisord.
 
 Dependencies
 ------------
