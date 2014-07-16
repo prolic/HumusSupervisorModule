@@ -7,23 +7,23 @@ use HumusSupervisorModule\Module;
 class ModuleTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var PHPUnit_Framework_MockObject_MockObject|\Zend\Mvc\Application
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Zend\Mvc\Application
      */
     private $application;
 
     /**
-     * @var PHPUnit_Framework_MockObject_MockObject|\Zend\Mvc\MvcEvent
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Zend\EventManager\EventInterface
      */
     private $event;
 
 
     /**
-     * @var PHPUnit_Framework_MockObject_MockObject|\Zend\ServiceManager\ServiceManager
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Zend\ServiceManager\ServiceManager
      */
     private $serviceManager;
 
     /**
-     * @var PHPUnit_Framework_MockObject_MockObject|\Indigo\Supervisor\Supervisor
+     * @var \PHPUnit_Framework_MockObject_MockObject|\Indigo\Supervisor\Supervisor
      */
     private $supervisor;
 
@@ -33,28 +33,6 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
         $this->event = $this->getMock('Zend\EventManager\EventInterface', array('getApplication', 'getName', 'getTarget', 'getParams', 'getParam', 'setName', 'setTarget', 'setParams', 'setParam', 'stopPropagation', 'propagationIsStopped'));
         $this->serviceManager = $this->getMock('Zend\ServiceManager\ServiceManager');
         $this->supervisor = $this->getMock('Indigo\Supervisor\Supervisor', array(), array(), '', false);
-
-        $this
-            ->serviceManager
-            ->expects($this->any())
-            ->method('get')
-            ->with('test-supervisor')
-            ->will($this->returnValue($this->supervisor));
-
-        $this
-            ->serviceManager
-            ->expects($this->any())
-            ->method('get')
-            ->with('Config')
-            ->will($this->returnValue(array(
-                'humus_supervisor_module' => array(
-                    'test-supervisor' => array(
-                        'host' => 'localhost',
-                        'username' => 'user',
-                        'password' => '123'
-                    )
-                )
-            )));
 
         $this
             ->application
@@ -73,6 +51,23 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getApplication')
             ->will($this->returnValue($this->application));
+
+        $this
+            ->serviceManager
+            ->expects($this->any())
+            ->method('get')
+            ->will($this->onConsecutiveCalls(
+                array(
+                    'humus_supervisor_module' => array(
+                        'test-supervisor' => array(
+                            'host' => 'localhost',
+                            'username' => 'user',
+                            'password' => '123'
+                        )
+                    )
+                ),
+                $this->supervisor
+            ));
     }
 
     public function testGetConfig()
@@ -101,6 +96,7 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
 
         $module->onBootstrap($this->event);
 
-
+        $supervisor = $this->serviceManager->get('test-supervisor');
+        $this->assertSame($this->supervisor, $supervisor);
     }
 }
