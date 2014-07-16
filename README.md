@@ -39,5 +39,5 @@ Usage
 
 Make use of your supervisor:
 
-$supervisor = $serviceManager->get('my-supervisor);
-$supervisor->isRunning();
+    $supervisor = $serviceManager->get('my-supervisor);
+    $supervisor->isRunning();
