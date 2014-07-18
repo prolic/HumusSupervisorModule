@@ -20,13 +20,20 @@ namespace HumusSupervisorModule;
 
 use GuzzleHttp\Client;
 use Indigo\Supervisor\Connector\GuzzleConnector;
+use Indigo\Supervisor\Connector\ZendConnector;
 use Indigo\Supervisor\Supervisor;
+use Zend\Console\Adapter\AdapterInterface;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 
-class Module implements AutoloaderProviderInterface, BootstrapListenerInterface, ConfigProviderInterface
+class Module implements
+    AutoloaderProviderInterface,
+    BootstrapListenerInterface,
+    ConfigProviderInterface,
+    ConsoleUsageProviderInterface
 {
     /**
      * Get config
@@ -55,9 +62,15 @@ class Module implements AutoloaderProviderInterface, BootstrapListenerInterface,
             $serviceManager->setFactory($name, function() use ($connectionSettings) {
                 $port = isset($connectionSettings['port']) ? ':' . $connectionSettings['port'] : '';
 
+
                 $connector = new GuzzleConnector(new Client(array(
                     'base_url' => 'http://' . $connectionSettings['host'] . $port
                 )));
+
+
+                /*
+                $connector = new ZendConnector(new \Zend\XmlRpc\Client($connectionSettings['host'] . $port));
+                */
                 $connector->setCredentials($connectionSettings['username'], $connectionSettings['password']);
 
                 $supervisor = new Supervisor($connector);
@@ -82,6 +95,42 @@ class Module implements AutoloaderProviderInterface, BootstrapListenerInterface,
                     __NAMESPACE__ => __DIR__,
                 ),
             ),
+        );
+    }
+
+    /**
+     * Returns an array or a string containing usage information for this module's Console commands.
+     * The method is called with active Zend\Console\Adapter\AdapterInterface that can be used to directly access
+     * Console and send output.
+     *
+     * If the result is a string it will be shown directly in the console window.
+     * If the result is an array, its contents will be formatted to console window width. The array must
+     * have the following format:
+     *
+     *     return array(
+     *                'Usage information line that should be shown as-is',
+     *                'Another line of usage info',
+     *
+     *                '--parameter'        =>   'A short description of that parameter',
+     *                '-another-parameter' =>   'A short description of another parameter',
+     *                ...
+     *            )
+     *
+     * @param AdapterInterface $console
+     * @return array|string|null
+     */
+    public function getConsoleUsage(AdapterInterface $console)
+    {
+        return array(
+            // Describe available commands
+            'humus supervisor <command>'    => '',
+
+            'Available commands:',
+            array(
+                '(start|stop|processlist|pid|version|api|islocal)',
+                'start/ stop the supervisor, list all processes, get supervisor pid, "
+                . "get supervisor version, get api version'
+            )
         );
     }
 }

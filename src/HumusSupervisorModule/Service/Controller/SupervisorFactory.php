@@ -13,30 +13,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * This software consists of voluntary contributions made by many individuals
- * and is licensed under the MIT license
+ * and is licensed under the MIT license.
  */
 
-namespace HumusSupervisorModule;
+namespace HumusSupervisorModule\Service\Controller;
 
-return array(
-    'humus_supervisor_module' => array(),
-    'console' => array(
-        'router' => array(
-            'routes' => array(
-                'humus_supervisor_module-supervisor' => array(
-                    'options' => array(
-                        'route'    => 'humus supervisor (start|stop|processlist|pid|version|api|islocal):action',
-                        'defaults' => array(
-                            'controller' => __NAMESPACE__ . '\\Controller\\Supervisor',
-                        )
-                    )
-                ),
-            )
-        )
-    ),
-    'controllers' => array(
-        'factories' => array(
-            __NAMESPACE__ . '\\Controller\\Supervisor' => __NAMESPACE__ . '\\Service\\Controller\\SupervisorFactory'
-        )
-    ),
-);
+use HumusSupervisorModule\Controller\SupervisorController;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+
+class SupervisorFactory implements FactoryInterface
+{
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return mixed
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $sm = $serviceLocator->getServiceLocator();
+        $supervisor = $sm->get('humus-supervisor');
+
+        $controller = new SupervisorController();
+        $controller->setSupervisor($supervisor);
+
+        return $controller;
+    }
+}
