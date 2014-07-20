@@ -12,11 +12,11 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.2.23",
         "indigophp/supervisor": "dev-develop",
-        "zendframework/zend-servicemanager": "2.*",
-        "zendframework/zend-modulemanager": "2.*",
-        "zendframework/zend-mvc": "2.*",
+        "zendframework/zend-servicemanager": ">=2.3.0",
+        "zendframework/zend-modulemanager": ">=2.3.0",
+        "zendframework/zend-mvc": ">=2.3.0",
         "guzzlehttp/guzzle": "4.*"
     },
     "require-dev": {
