@@ -11,7 +11,7 @@ Humus Supervisor Module is a module for Zend Framework 2 based on supervisord.
 Dependencies
 ------------
 
- - PHP 5.4.0
+ - PHP 5.3.23
  - [Indigo Supervisor](https://github.com/indigophp/supervisor)
  - [supervisord](http://www.supervisdord.com)
  - [GuzzleHttp 4.1.0](https://github.com/guzzle/guzzle)
