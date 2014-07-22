@@ -20,25 +20,18 @@ class SupervisorAbstractServiceFactoryTest extends TestCase
 
     public function setUp()
     {
-        $config = array(
+        $services    = $this->services = new ServiceManager();
+        $services->setAllowOverride(true);
+
+        $services->setService('Config', array(
             'humus_supervisor_module' => array(
                 'test-supervisor' => array(
                     'host' => 'localhost',
                     'username' => 'user',
                     'password' => '123'
-                ),
-                'test-supervisor-2' => array(
-                    'host' => 'localhost',
-                    'username' => 'user',
-                    'password' => '123'
                 )
             )
-        );
-
-        $services    = $this->services = new ServiceManager();
-        $services->setAllowOverride(true);
-
-        $services->setService('Config', $config);
+        ));
 
         $compontents = $this->components = new SupervisorAbstractServiceFactory();
         $services->addAbstractFactory($compontents);
