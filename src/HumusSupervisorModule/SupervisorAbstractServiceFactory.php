@@ -3,6 +3,9 @@
 namespace HumusSupervisorModule;
 
 use ArrayAccess;
+use GuzzleHttp\Client;
+use Indigo\Supervisor\Connector\GuzzleConnector;
+use Indigo\Supervisor\Supervisor;
 use Traversable;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -57,7 +60,31 @@ class SupervisorAbstractServiceFactory implements AbstractFactoryInterface
      */
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
-        // TODO: Implement createServiceWithName() method.
+        if (isset($this->instances[$requestedName])) {
+            return $this->instances[$requestedName];
+        }
+
+        /* @var $serviceLocator \Zend\ServiceManager\ServiceManager */
+        $config  = $this->getConfig($serviceLocator);
+
+        $params = $config[$requestedName];
+
+        $port = isset($params['port']) ? ':' . $params['port'] : '';
+
+
+        $connector = new GuzzleConnector(new Client(array(
+            'base_url' => 'http://' . $port['host'] . $port
+        )));
+
+
+        /*
+        $connector = new ZendConnector(new \Zend\XmlRpc\Client($connectionSettings['host'] . $port));
+        */
+        $connector->setCredentials($port['username'], $port['password']);
+
+        $this->instances[$requestedName] = $supervisor = new Supervisor($connector);
+
+        return $supervisor;
     }
 
     /**
