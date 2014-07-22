@@ -47,18 +47,18 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
     {
         $this->application = $this->getMock('Zend\Mvc\Application', array('getServiceManager'), array(), '', false);
         $this->event = $this->getMock(
-            'Zend\EventManager\EventInterface', 
+            'Zend\EventManager\EventInterface',
             array(
-                'getApplication', 
-                'getName', 
-                'getTarget', 
-                'getParams', 
-                'getParam', 
-                'setName', 
-                'setTarget', 
-                'setParams', 
-                'setParam', 
-                'stopPropagation', 
+                'getApplication',
+                'getName',
+                'getTarget',
+                'getParams',
+                'getParam',
+                'setName',
+                'setTarget',
+                'setParams',
+                'setParam',
+                'stopPropagation',
                 'propagationIsStopped'
             )
         );
