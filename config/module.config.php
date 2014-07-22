@@ -25,7 +25,7 @@ return array(
             'routes' => array(
                 'humus_supervisor_module-supervisor' => array(
                     'options' => array(
-                        'route'    => 'humus supervisor (start|stop|processlist|pid|version|api|islocal):action',
+                        'route'    => 'humus supervisor <name> (start|stop|processlist|pid|version|api|islocal):action',
                         'defaults' => array(
                             'controller' => __NAMESPACE__ . '\\Controller\\Supervisor',
                         )
@@ -35,8 +35,8 @@ return array(
         )
     ),
     'controllers' => array(
-        'factories' => array(
-            __NAMESPACE__ . '\\Controller\\Supervisor' => __NAMESPACE__ . '\\Service\\Controller\\SupervisorFactory'
+        'invokables' => array(
+            __NAMESPACE__ . '\\Controller\\Supervisor' => __NAMESPACE__ . '\\Controller\\SupervisorController'
         )
     ),
 );
