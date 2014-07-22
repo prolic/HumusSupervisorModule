@@ -55,6 +55,12 @@ class SupervisorAbstractServiceFactoryTest extends TestCase
         $this->assertFalse($this->components->canCreateServiceWithName($this->services, 'foo', 'foo'));
     }
 
+    public function testMissingConfigIndicatesCannotCreateInstance()
+    {
+        $this->services->setService('Config', null);
+        $this->assertFalse($this->components->canCreateServiceWithName($this->services, 'foo', 'foo'));
+    }
+
     public function testInvalidConfigIndicatesCannotCreateInstance()
     {
         $this->services->setService('Config', array('humus_amqp_module' => 'string'));
@@ -71,6 +77,14 @@ class SupervisorAbstractServiceFactoryTest extends TestCase
 
     public function testSupervisorFactory()
     {
+        $this->assertTrue(
+            $this->components->canCreateServiceWithName(
+                $this->services,
+                'test-supervisor',
+                'test-supervisor'
+            )
+        );
+
         $supervisor = $this->components->createServiceWithName(
             $this->services,
             'test-supervisor',
@@ -93,6 +107,23 @@ class SupervisorAbstractServiceFactoryTest extends TestCase
         );
 
         $this->assertSame($supervisor, $supervisor2);
+    }
+
+    public function testMissingSpecIndicatesCannotCreateSupervisor()
+    {
+        $this->services->setService('Config', array(
+            'humus_supervisor_module' => array(
+                'test-supervisor' => array(
+                ),
+            ),
+        ));
+        $this->assertFalse(
+            $this->components->canCreateServiceWithName(
+                $this->services,
+                'test-supervisor',
+                'test-supervisor'
+            )
+        );
     }
 
 }
