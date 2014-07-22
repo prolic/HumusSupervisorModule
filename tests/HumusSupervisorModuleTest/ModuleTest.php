@@ -19,6 +19,9 @@
 namespace HumusSupervisorModuleTest;
 
 use HumusSupervisorModule\Module;
+use Zend\Console\Adapter\AdapterInterface as ConsoleAdapter;
+use Zend\Mvc\Service\ServiceManagerConfig;
+use Zend\ServiceManager\ServiceManager;
 
 class ModuleTest extends \PHPUnit_Framework_TestCase
 {
@@ -42,6 +45,11 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
      * @var \PHPUnit_Framework_MockObject_MockObject|\Indigo\Supervisor\Supervisor
      */
     private $supervisor;
+
+    /**
+     * @var ConsoleAdapter
+     */
+    private $consoleAdapter;
 
     public function setUp()
     {
@@ -99,6 +107,8 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
                 ),
                 $this->supervisor
             ));
+
+        $this->consoleAdapter = $this->getMock('Zend\Console\Adapter\AdapterInterface');
     }
 
     public function testGetConfig()
@@ -121,13 +131,69 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($config, unserialize(serialize($config)));
     }
 
+    public function testGetConsoleUsage()
+    {
+        $module = new Module();
+
+        $usage = $module->getConsoleUsage($this->consoleAdapter);
+        $this->assertInternalType('array', $usage);
+    }
+
     public function testBootstrap()
     {
+        $this->serviceManager = new ServiceManager();
+        $this->serviceManager->setService('Config', array(
+            'humus_supervisor_module' => array(
+                'test-supervisor' => array(
+                    'host' => 'localhost',
+                    'username' => 'user',
+                    'password' => '123'
+                )
+            )
+        ));
+        $this->application = $this->getMock('Zend\Mvc\Application', array('getServiceManager'), array(), '', false);
+        $this->event = $this->getMock(
+            'Zend\EventManager\EventInterface',
+            array(
+                'getApplication',
+                'getName',
+                'getTarget',
+                'getParams',
+                'getParam',
+                'setName',
+                'setTarget',
+                'setParams',
+                'setParam',
+                'stopPropagation',
+                'propagationIsStopped'
+            )
+        );
+        $this
+            ->application
+            ->expects($this->any())
+            ->method('getServiceManager')
+            ->will($this->returnValue($this->serviceManager));
+
+        $this
+            ->event
+            ->expects($this->any())
+            ->method('getTarget')
+            ->will($this->returnValue($this->application));
+
+        $this
+            ->event
+            ->expects($this->any())
+            ->method('getApplication')
+            ->will($this->returnValue($this->application));
+
+        $this->serviceManager->setService('Application', $this->application);
+
         $module = new Module();
 
         $module->onBootstrap($this->event);
 
         $supervisor = $this->serviceManager->get('test-supervisor');
-        $this->assertSame($this->supervisor, $supervisor);
+
+        $this->assertInstanceOf('Indigo\Supervisor\Supervisor', $supervisor);
     }
 }
