@@ -33,7 +33,7 @@ class SupervisorFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $sm = $serviceLocator->getServiceLocator();
-        $supervisor = $sm->get('humus-supervisor');
+        $supervisor = $sm->get('humus-amqp-supervisor');
 
         $controller = new SupervisorController();
         $controller->setSupervisor($supervisor);
