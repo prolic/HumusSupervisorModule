@@ -123,13 +123,14 @@ class Module implements
     {
         return array(
             // Describe available commands
-            'humus supervisor <command>'    => '',
+            'humus supervisor <name> <command>' => '',
 
             'Available commands:',
             array(
-                '(start|stop|processlist|pid|version|api|islocal)',
-                'start/ stop the supervisor, list all processes, get supervisor pid, "
-                . "get supervisor version, get api version'
+                '(start|stop|processlist|pid|version|api|islocal|connection)',
+                'start/ stop the supervisor, list all processes, get supervisor pid, ',
+                'get supervisor version, get api version, check wheter the supervisor is local, ',
+                'get connection details'
             )
         );
     }

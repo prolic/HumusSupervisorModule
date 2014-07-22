@@ -44,6 +44,19 @@ class SupervisorController extends AbstractConsoleController
         $this->$action();
     }
 
+    public function connection()
+    {
+        $this->getSupervisor(); // checks for existence
+        $config = $this->getServiceLocator()->get('ApplicationConfig');
+        $connectionConfig = $config['humus_supervisor_module'][$this->getRequest()->getParam('name')];
+        $this->getConsole()->writeLine('host: ' . $connectionConfig['host']);
+        if (isset($connectionConfig['port'])) {
+            $this->getConsole()->writeLine('port: ' . $connectionConfig['port']);
+        }
+        $this->getConsole()->writeLine('username: ' . $connectionConfig['username']);
+        $this->getConsole()->writeLine('password: ' . $connectionConfig['password']);
+    }
+
     /**
      * @return void
      */
@@ -146,13 +159,15 @@ class SupervisorController extends AbstractConsoleController
 
         $name = $this->getRequest()->getParam('name');
 
-        if (!$this->getServiceLocator()->has($name)) {
+        $sm = $this->getServiceLocator();
+
+        if (!$sm->has($name)) {
             throw new Exception\InvalidArgumentException(
                 'Supervisor "' . $name . '" not found'
             );
         }
 
-        $supervisor = $this->getServiceLocator()->get($name);
+        $supervisor = $sm->get($name);
 
         if (!$supervisor instanceof Supervisor) {
             throw new Exception\InvalidArgumentException(
