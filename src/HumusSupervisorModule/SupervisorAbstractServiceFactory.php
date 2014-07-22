@@ -73,14 +73,14 @@ class SupervisorAbstractServiceFactory implements AbstractFactoryInterface
 
 
         $connector = new GuzzleConnector(new Client(array(
-            'base_url' => 'http://' . $port['host'] . $port
+            'base_url' => 'http://' . $params['host'] . $port
         )));
 
 
         /*
         $connector = new ZendConnector(new \Zend\XmlRpc\Client($connectionSettings['host'] . $port));
         */
-        $connector->setCredentials($port['username'], $port['password']);
+        $connector->setCredentials($params['username'], $params['password']);
 
         $this->instances[$requestedName] = $supervisor = new Supervisor($connector);
 
