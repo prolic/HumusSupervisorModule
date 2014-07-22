@@ -1,7 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sasa
- * Date: 22.07.14
- * Time: 17:33
- */ 
+
+namespace HumusSupervisorModule\Exception;
+
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
+{
+}
