@@ -27,8 +27,14 @@ return array(
     'humus_supervisor_module' => array(
         'test-supervisor' => array(
             'host' => 'localhost',
+            'port' => 19005,
             'username' => 'user',
             'password' => '123'
+        )
+    ),
+    'service_manager' => array(
+        'abstract_factories' => array(
+            'HumusSupervisorModule\SupervisorAbstractServiceFactory'
         )
     )
 );
