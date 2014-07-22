@@ -69,4 +69,30 @@ class SupervisorAbstractServiceFactoryTest extends TestCase
         );
     }
 
+    public function testSupervisorFactory()
+    {
+        $supervisor = $this->components->createServiceWithName(
+            $this->services,
+            'test-supervisor',
+            'test-supervisor'
+        );
+        $this->assertInstanceOf('Indigo\Supervisor\Supervisor', $supervisor);
+
+        $this->assertTrue(
+            $this->components->canCreateServiceWithName(
+                $this->services,
+                'test-supervisor',
+                'test-supervisor'
+            )
+        );
+
+        $supervisor2 = $this->components->createServiceWithName(
+            $this->services,
+            'test-supervisor',
+            'test-supervisor'
+        );
+
+        $this->assertSame($supervisor, $supervisor2);
+    }
+
 }
