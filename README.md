@@ -26,7 +26,7 @@ Installation
 Configuration
 -------------
 
-Change your application configuration like this:
+Add this to your module configuration:
 
 ``` php
 'humus_supervisor_module' => array(
@@ -45,7 +45,8 @@ Usage
 Make use of your supervisor:
 
 ``` php
-$supervisor = $serviceManager->get('my-supervisor');
+$manager = $serviceManager->get('HumusSupervisorModule\SupervisorManager');
+$supervisor = $manager->get('demo-supervisor');
 $supervisor->isRunning();
 ```
 
