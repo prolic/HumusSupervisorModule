@@ -34,11 +34,21 @@ class SupervisorControllerTest extends ServiceManagerTestCase
      */
     protected $event;
 
+    /**
+     * @var \Zend\Console\Adapter\AdapterInterface
+     */
     protected $console;
+
+    /**
+     * @var ServiceManager
+     */
+    protected $serviceManager;
 
     public function setUp()
     {
-        $serviceManager = $this->getServiceManager();
+        $this->serviceManager = $this->getServiceManager();
+        $this->serviceManager->setAllowOverride(true);
+        $this->serviceManager->addAbstractFactory('HumusSupervisorModule\\SupervisorAbstractServiceFactory');
         $this->controller = new SupervisorController();
         $this->request    = new Request();
         $this->request->setParams(new Parameters(array('name' => 'test-supervisor')));
@@ -46,13 +56,23 @@ class SupervisorControllerTest extends ServiceManagerTestCase
         $this->event      = new MvcEvent();
         $this->event->setRouteMatch($this->routeMatch);
         $this->controller->setEvent($this->event);
-        $this->controller->setServiceLocator($serviceManager);
+        $this->controller->setServiceLocator($this->serviceManager);
         $this->console = $this->getMock('Zend\Console\Adapter\AdapterInterface');
         $this->controller->setConsole($this->console);
     }
 
     public function testFetchingOfSupervisors()
     {
+        $this->serviceManager->setService('Config', array(
+            'humus_supervisor_module' => array(
+                'test-supervisor' => array(
+                    'host' => 'localhost',
+                    'port' => 2323,
+                    'username' => 'user',
+                    'password' => '123'
+                )
+            ),
+        ));
         $this->request->getParams()->set('action', 'connection');
         $resonse = new Response();
         $this->controller->dispatch($this->request, $resonse);

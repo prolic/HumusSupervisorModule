@@ -22,45 +22,38 @@ use Indigo\Supervisor\Supervisor;
 use HumusSupervisorModule\Exception;
 use Zend\Console\ColorInterface;
 use Zend\Mvc\Controller\AbstractConsoleController;
+use Zend\ServiceManager\AbstractPluginManager;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 
 class SupervisorController extends AbstractConsoleController
 {
     /**
-     * @var Supervisor
+     * @var AbstractPluginManager
      */
-    protected $supervisor;
+    protected $supervisorPluginManager;
 
     /**
      * {@inheritdoc}
      */
-    public function dispatch(RequestInterface $request, ResponseInterface $response = null)
-    {
-        parent::dispatch($request, $response);
 
-        $action = $request->getParam('action');
-
-        $this->$action();
-    }
-
-    public function connection()
+    public function connectionAction()
     {
         $this->getSupervisor(); // checks for existence
-        $config = $this->getServiceLocator()->get('ApplicationConfig');
+        $config = $this->getServiceLocator()->get('Config');
         $connectionConfig = $config['humus_supervisor_module'][$this->getRequest()->getParam('name')];
-        $this->getConsole()->writeLine('host: ' . $connectionConfig['host']);
+        echo 'host: ' . $connectionConfig['host'] . PHP_EOL;
         if (isset($connectionConfig['port'])) {
-            $this->getConsole()->writeLine('port: ' . $connectionConfig['port']);
+            echo 'port: ' . $connectionConfig['port'] . PHP_EOL;
         }
-        $this->getConsole()->writeLine('username: ' . $connectionConfig['username']);
-        $this->getConsole()->writeLine('password: ' . $connectionConfig['password']);
+        echo 'username: ' . $connectionConfig['username'] . PHP_EOL;
+        echo 'password: ' . $connectionConfig['password'] . PHP_EOL;
     }
 
     /**
      * @return void
      */
-    public function start()
+    public function startAction()
     {
         $this->getSupervisor()->startAllProcesses();
     }
@@ -68,7 +61,7 @@ class SupervisorController extends AbstractConsoleController
     /**
      * @return void
      */
-    public function stop()
+    public function stopAction()
     {
         $this->getSuperVisor()->stopAllProcesses();
     }
@@ -76,7 +69,7 @@ class SupervisorController extends AbstractConsoleController
     /**
      * @return void
      */
-    public function processlist()
+    public function processlistAction()
     {
         $processes = $this->getSuperVisor()->getAllProcesses();
 
@@ -106,7 +99,7 @@ class SupervisorController extends AbstractConsoleController
     /**
      * @return void
      */
-    public function pid()
+    public function pidAction()
     {
         echo $this->getSuperVisor()->getPID();
     }
@@ -114,7 +107,7 @@ class SupervisorController extends AbstractConsoleController
     /**
      * @return void
      */
-    public function version()
+    public function versionAction()
     {
         echo $this->getSuperVisor()->getVersion();
     }
@@ -122,7 +115,7 @@ class SupervisorController extends AbstractConsoleController
     /**
      * @return void
      */
-    public function api()
+    public function apiAction()
     {
         echo $this->getSuperVisor()->getAPIVersion();
     }
@@ -130,7 +123,7 @@ class SupervisorController extends AbstractConsoleController
     /**
      * @return void
      */
-    public function isLocal()
+    public function isLocalAction()
     {
         if ($this->getSuperVisor()->isLocal()) {
             echo 'local';
@@ -140,42 +133,29 @@ class SupervisorController extends AbstractConsoleController
     }
 
     /**
-     * @param Supervisor $supervisor
+     * @param AbstractPluginManager $pluginManager
      */
-    public function setSupervisor(Supervisor $supervisor)
+    public function setSupervisorPluginManager(AbstractPluginManager $pluginManager)
     {
-        $this->supervisor = $supervisor;
+        $this->supervisorPluginManager = $pluginManager;
     }
 
     /**
      * @return Supervisor
-     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
-    public function getSupervisor()
+    protected function getSupervisor()
     {
-        if ($this->supervisor instanceof Supervisor) {
-            return $this->supervisor;
-        }
-
         $name = $this->getRequest()->getParam('name');
 
-        $sm = $this->getServiceLocator();
+        var_dump($this->supervisorPluginManager); die;
 
-        if (!$sm->has($name)) {
-            throw new Exception\InvalidArgumentException(
-                'Supervisor "' . $name . '" not found'
+        if (!$this->supervisorPluginManager->has($name)) {
+            throw new Exception\RuntimeException(
+                $name . ' not found in SupervisorPluginManager'
             );
         }
 
-        $supervisor = $sm->get($name);
-
-        if (!$supervisor instanceof Supervisor) {
-            throw new Exception\InvalidArgumentException(
-                '"' . $name . '" found, but is not a valid supervisor'
-            );
-        }
-
-        $this->supervisor = $supervisor;
-        return $supervisor;
+        return $this->supervisorPluginManager->get($name);
     }
 }

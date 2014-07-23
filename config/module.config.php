@@ -19,7 +19,13 @@
 namespace HumusSupervisorModule;
 
 return array(
-    'humus_supervisor_module' => array(),
+    'humus_supervisor_module' => array(
+        'supervisor_plugin_manager' => array(
+            'abstract_factories' => array(
+                __NAMESPACE__ . '\\SupervisorAbstractServiceFactory'
+            )
+        )
+    ),
     'console' => array(
         'router' => array(
             'routes' => array(
@@ -35,8 +41,8 @@ return array(
         )
     ),
     'controllers' => array(
-        'invokables' => array(
-            __NAMESPACE__ . '\\Controller\\Supervisor' => __NAMESPACE__ . '\\Controller\\SupervisorController'
+        'factories' => array(
+            __NAMESPACE__ . '\\Controller\\Supervisor' => __NAMESPACE__ . '\\Service\\SupervisorControllerFactory'
         )
     ),
 );

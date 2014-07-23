@@ -46,37 +46,29 @@ class Module implements
     }
 
     /**
-     * Bootstrap the module / build supervisors
+     * Bootstrap the module
+     *
+     * Register the supervisor plugin manager
      *
      * @param EventInterface $e
      * @return array
      */
     public function onBootstrap(EventInterface $e)
     {
+        /* @var $e \Zend\Mvc\MvcEvent */
         $serviceManager = $e->getApplication()->getServiceManager();
+        /* @var $serviceManager \Zend\ServiceManager\ServiceManager */
 
-        $config = $serviceManager->get('Config');
-        $moduleConfig = $config['humus_supervisor_module'];
+        $className = __NAMESPACE__ . '\SupervisorManager';
 
-        foreach ($moduleConfig as $name => $connectionSettings) {
-            $serviceManager->setFactory($name, function () use ($connectionSettings) {
-                $port = isset($connectionSettings['port']) ? ':' . $connectionSettings['port'] : '';
-
-
-                $connector = new GuzzleConnector(new Client(array(
-                    'base_url' => 'http://' . $connectionSettings['host'] . $port
-                )));
-
-
-                /*
-                $connector = new ZendConnector(new \Zend\XmlRpc\Client($connectionSettings['host'] . $port));
-                */
-                $connector->setCredentials($connectionSettings['username'], $connectionSettings['password']);
-
-                $supervisor = new Supervisor($connector);
-                return $supervisor;
-            });
-        }
+        $serviceManager->setFactory($className, function ($sm) use ($className) {
+            $config = $sm->get('Config');
+            return new $className(
+                new \Zend\ServiceManager\Config(
+                    $config['humus_supervisor_module']['supervisor_plugin_manager']
+                )
+            );
+        });
     }
 
     /**

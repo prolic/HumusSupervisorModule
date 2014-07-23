@@ -99,12 +99,12 @@ class SupervisorAbstractServiceFactory implements AbstractFactoryInterface
             return $this->config;
         }
 
-        if (!$services->has('ApplicationConfig')) {
+        if (!$services->has('Config')) {
             $this->config = array();
             return $this->config;
         }
 
-        $config = $services->get('ApplicationConfig');
+        $config = $services->get('Config');
         if (!isset($config[$this->configKey])
             || !is_array($config[$this->configKey])
         ) {
