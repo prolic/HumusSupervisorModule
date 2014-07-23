@@ -144,10 +144,7 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
         $this->serviceManager = new ServiceManager();
         $this->serviceManager->setService('Config', array(
             'humus_supervisor_module' => array(
-                'test-supervisor' => array(
-                    'host' => 'localhost',
-                    'username' => 'user',
-                    'password' => '123'
+                'supervisor_plugin_manager' => array(
                 )
             )
         ));
@@ -192,8 +189,8 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
 
         $module->onBootstrap($this->event);
 
-        $supervisor = $this->serviceManager->get('test-supervisor');
+        $supervisor = $this->serviceManager->get('HumusSupervisorModule\SupervisorManager');
 
-        $this->assertInstanceOf('Indigo\Supervisor\Supervisor', $supervisor);
+        $this->assertInstanceOf('HumusSupervisorModule\SupervisorManager', $supervisor);
     }
 }
