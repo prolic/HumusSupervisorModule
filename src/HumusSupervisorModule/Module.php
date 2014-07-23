@@ -63,6 +63,7 @@ class Module implements
 
         $serviceManager->setFactory($className, function ($sm) use ($className) {
             $config = $sm->get('Config');
+
             return new $className(
                 new \Zend\ServiceManager\Config(
                     $config['humus_supervisor_module']['supervisor_plugin_manager']

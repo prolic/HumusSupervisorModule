@@ -66,7 +66,6 @@ class SupervisorAbstractServiceFactory implements AbstractFactoryInterface
 
         /* @var $serviceLocator \Zend\ServiceManager\ServiceManager */
         $config  = $this->getConfig($serviceLocator);
-
         $params = $config[$requestedName];
 
         $port = isset($params['port']) ? ':' . $params['port'] : '';
@@ -90,14 +89,17 @@ class SupervisorAbstractServiceFactory implements AbstractFactoryInterface
     /**
      * Get amqp configuration, if any
      *
-     * @param  ServiceLocatorInterface $services
+     * @param  ServiceLocatorInterface $serviceLocator
      * @return array
      */
-    protected function getConfig(ServiceLocatorInterface $services)
+    protected function getConfig(ServiceLocatorInterface $serviceLocator)
     {
         if ($this->config !== null) {
             return $this->config;
         }
+
+        /* @var $serviceLocator SupervisorManager */
+        $services = $serviceLocator->getServiceLocator();
 
         if (!$services->has('Config')) {
             $this->config = array();

@@ -6,7 +6,6 @@ use Indigo\Supervisor\Supervisor;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ConfigInterface;
-use Zend\ServiceManager\Exception;
 
 class SupervisorManager extends AbstractPluginManager
 {

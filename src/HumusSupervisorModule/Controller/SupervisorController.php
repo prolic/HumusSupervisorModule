@@ -42,6 +42,7 @@ class SupervisorController extends AbstractConsoleController
         $this->getSupervisor(); // checks for existence
         $config = $this->getServiceLocator()->get('Config');
         $connectionConfig = $config['humus_supervisor_module'][$this->getRequest()->getParam('name')];
+        echo 'Connection Settings for: ' . $this->getRequest()->getParam('name') . PHP_EOL;
         echo 'host: ' . $connectionConfig['host'] . PHP_EOL;
         if (isset($connectionConfig['port'])) {
             echo 'port: ' . $connectionConfig['port'] . PHP_EOL;
@@ -147,8 +148,6 @@ class SupervisorController extends AbstractConsoleController
     protected function getSupervisor()
     {
         $name = $this->getRequest()->getParam('name');
-
-        var_dump($this->supervisorPluginManager); die;
 
         if (!$this->supervisorPluginManager->has($name)) {
             throw new Exception\RuntimeException(
