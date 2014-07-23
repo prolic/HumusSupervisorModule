@@ -18,40 +18,64 @@
 
 namespace HumusSupervisorModuleTest\Controller;
 
-use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
+use HumusSupervisorModule\Controller\SupervisorController;
+use HumusSupervisorModule\SupervisorManager;
+use Indigo\Supervisor\Supervisor;
+use MyProject\Proxies\__CG__\stdClass;
+use Zend\Console\Request;
+use Zend\Mvc\MvcEvent;
+use Zend\Mvc\Router\Console\RouteMatch;
+use Zend\ServiceManager\ServiceManager;
+use Zend\Test\PHPUnit\Controller\AbstractConsoleControllerTestCase;
 
-class SupervisorControllerTest extends AbstractHttpControllerTestCase
+class SupervisorControllerTest extends AbstractConsoleControllerTestCase
 {
+    /**
+     * @var ServiceManager
+     */
+    protected $services;
+
+    /**
+     * @var SupervisorManager|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $manager;
+
+    /**
+     * @var Supervisor|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $supervisor;
+
+    /**
+     * @var SupervisorController
+     */
+    protected $controller;
+
+    /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
+     * @var MvcEvent
+     */
+    protected $event;
+
+    /**
+     * @var RouteMatch
+     */
+    protected $routeMatch;
+
     protected function setUp()
     {
+        parent::setUp();
         $this->setApplicationConfig(
             include __DIR__ . '/../../TestConfiguration.php.dist'
         );
-        parent::setUp();
-        $this->setUseConsoleRequest(true);
-    }
-
-    public function testFetchingOfSupervisors()
-    {
-        $supervisor = $this->getMock('Indigo\Supervisor\Supervisor', array(), array(), '', false);
-
-        $manager = $this->getMock('HumusSupervisorModule\SupervisorManager');
-
-        $manager
-            ->expects($this->any())
-            ->method('get')
-            ->with('test-supervisor')
-            ->willReturn($supervisor);
-
-
-        $services = $this->getApplicationServiceLocator();
+        $this->services = $services = $this->getApplicationServiceLocator();
         $services->setAllowOverride(true);
         $services->setService('Config', array(
             'humus_supervisor_module' => array(
                 'supervisor_plugin_manager' => array(
-                    'abstract_factories' => array(
-                        'HumusSupervisorModule\SupervisorAbstractServiceFactory'
-                    )
                 ),
                 'test-supervisor' => array(
                     'host' => 'localhost',
@@ -61,16 +85,161 @@ class SupervisorControllerTest extends AbstractHttpControllerTestCase
                 )
             )
         ));
+
+        $this->supervisor = $supervisor = $this->getMock('Indigo\Supervisor\Supervisor', array(), array(), '', false);
+
+        $this->manager = $manager = $this->getMock('HumusSupervisorModule\SupervisorManager');
+        $manager
+            ->expects($this->any())
+            ->method('get')
+            ->with('test-supervisor')
+            ->willReturn($supervisor);
+
+        $manager
+            ->expects($this->any())
+            ->method('has')
+            ->with('test-supervisor')
+            ->willReturn(true);
+
+        $this->controller = new SupervisorController();
+        $this->routeMatch = new RouteMatch(array(
+            'controller' => 'HumusSupervisorModule\Controller\Supervisor',
+            'name' => 'test-supervisor'
+        ));
+        $this->request = new Request();
+        $this->event = new MvcEvent();
+        $this->event->setRouteMatch($this->routeMatch);
+        $this->controller->setEvent($this->event);
+        $this->controller->setServiceLocator($this->services);
+        $this->controller->setSupervisorPluginManager($this->manager);
+    }
+
+    public function testInvalidSupervisorTogetherWithCompleteMvcDispatchCycle()
+    {
+        $this->setUseConsoleRequest(true);
+
+        $this->dispatch('humus supervisor invalid-supervisor connection');
+
+        $this->assertResponseStatusCode(1);
+        $this->assertConsoleOutputContains('HumusSupervisorModule\Exception\RuntimeException');
+        $this->assertConsoleOutputContains('invalid-supervisor not found in SupervisorPluginManager');
+    }
+
+    public function testConnection()
+    {
+        $this->routeMatch->setParam('action', 'connection');
+
         ob_start();
-        $this->dispatch('humus supervisor test-supervisor connection');
+        $this->controller->dispatch($this->request);
         $result = ob_get_clean();
-        $this->assertResponseStatusCode(0);
-        $this->assertControllerName('HumusSupervisorModule\Controller\Supervisor');
-        $this->assertActionName('connection');
 
         $this->assertNotFalse(strpos($result, 'host: localhost'));
         $this->assertNotFalse(strpos($result, 'port: 3432'));
         $this->assertNotFalse(strpos($result, 'username: user'));
         $this->assertNotFalse(strpos($result, 'password: 123'));
+    }
+
+    public function testStartSupervisor()
+    {
+        $this->routeMatch->setParam('action', 'start');
+        $this->supervisor
+            ->expects($this->once())
+            ->method('__call')
+            ->with('startAllProcesses', array());
+
+        $this->controller->dispatch($this->request);
+    }
+
+    public function testStopSupervisor()
+    {
+        $this->routeMatch->setParam('action', 'stop');
+        $this->supervisor
+            ->expects($this->once())
+            ->method('__call')
+            ->with('stopAllProcesses', array());
+
+        $this->controller->dispatch($this->request);
+    }
+
+    public function testPidSupervisor()
+    {
+        $this->routeMatch->setParam('action', 'pid');
+        $this->supervisor
+            ->expects($this->once())
+            ->method('__call')
+            ->with('getPID', array());
+
+        $this->controller->dispatch($this->request);
+    }
+
+    public function testVersionSupervisor()
+    {
+        $this->routeMatch->setParam('action', 'version');
+        $this->supervisor
+            ->expects($this->once())
+            ->method('__call')
+            ->with('getVersion', array());
+
+        $this->controller->dispatch($this->request);
+    }
+
+    public function testApiSupervisor()
+    {
+        $this->routeMatch->setParam('action', 'api');
+        $this->supervisor
+            ->expects($this->once())
+            ->method('__call')
+            ->with('getAPIVersion', array());
+
+        $this->controller->dispatch($this->request);
+    }
+
+    public function testIsLocalSupervisor()
+    {
+        $this->routeMatch->setParam('action', 'islocal');
+        $this->supervisor
+            ->expects($this->once())
+            ->method('isLocal');
+
+        ob_start();
+        $this->controller->dispatch($this->request);
+        ob_get_clean();
+    }
+
+    public function testProcesslistSupervisor()
+    {
+        $process = $this->getMock('stdClass', array('getPayload', 'getName', 'getMemUsage'));
+        $process
+            ->expects($this->once())
+            ->method('getPayload')
+            ->willReturn(array(
+                'statename' => 'RUNNING',
+                'pid' => 123,
+                'description' => 'foobar'
+            ));
+        $process
+            ->expects($this->once())
+            ->method('getMemUsage')
+            ->willReturn(1000);
+        $process
+            ->expects($this->once())
+            ->method('getName')
+            ->willReturn('test');
+
+        $this->routeMatch->setParam('action', 'processlist');
+        $this->supervisor
+            ->expects($this->once())
+            ->method('getAllProcesses')
+            ->willReturn(array($process));
+
+        ob_start();
+        $this->controller->dispatch($this->request);
+        $result = ob_get_clean();
+
+        $this->assertNotFalse(strpos($result, 'test'));
+        $this->assertNotFalse(strpos($result, 'RUNNING'));
+        $this->assertNotFalse(strpos($result, '1000'));
+        $this->assertNotFalse(strpos($result, '123'));
+        $this->assertNotFalse(strpos($result, 'foobar'));
     }
 }
