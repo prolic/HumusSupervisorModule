@@ -124,7 +124,7 @@ class SupervisorController extends AbstractConsoleController
     /**
      * @return void
      */
-    public function isLocalAction()
+    public function islocalAction()
     {
         if ($this->getSuperVisor()->isLocal()) {
             echo 'local';
