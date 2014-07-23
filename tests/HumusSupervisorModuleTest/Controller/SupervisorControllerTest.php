@@ -2,16 +2,6 @@
 
 namespace HumusSupervisorModuleTest\Controller;
 
-use HumusSupervisorModule\Controller\SupervisorController;
-use HumusSupervisorModule\SupervisorManager;
-use Zend\Console\Request;
-use Zend\Console\Response;
-use Zend\Mvc\Controller\ControllerManager;
-use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\Console\RouteMatch;
-use Zend\Mvc\Service\ServiceManagerConfig;
-use Zend\ServiceManager\ServiceManager;
-use Zend\Stdlib\Parameters;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class SupervisorControllerTest extends AbstractHttpControllerTestCase
