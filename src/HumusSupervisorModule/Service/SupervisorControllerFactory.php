@@ -32,6 +32,7 @@ class SupervisorControllerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
+        /* @var $serviceLocator \Zend\Mvc\Controller\ControllerManager */
         $sm = $serviceLocator->getServiceLocator();
 
         $pluginManager = $sm->get('HumusSupervisorModule\SupervisorManager');
