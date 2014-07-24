@@ -4,6 +4,10 @@ Humus Supervisor Module
 [![Build Status](https://travis-ci.org/prolic/HumusSupervisorModule.svg?branch=master)](https://travis-ci.org/prolic/HumusSupervisorModule)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/prolic/HumusSupervisorModule/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/prolic/HumusSupervisorModule/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/prolic/HumusSupervisorModule/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/prolic/HumusSupervisorModule/?branch=master)
+[![License](https://poser.pugx.org/prolic/humus-supervisor-module/license.svg)](https://packagist.org/packages/prolic/humus-supervisor-module)
+[![Latest Stable Version](https://poser.pugx.org/prolic/humus-supervisor-module/v/stable.svg)](https://packagist.org/packages/prolic/humus-supervisor-module)
+[![Latest Unstable Version](https://poser.pugx.org/prolic/humus-supervisor-module/v/unstable.svg)](https://packagist.org/packages/prolic/humus-supervisor-module)
+[![Total Downloads](https://poser.pugx.org/prolic/humus-supervisor-module/downloads.svg)](https://packagist.org/packages/prolic/humus-supervisor-module)
 [![Dependency Status](https://www.versioneye.com/user/projects/53c670c8a54f97c98f000002/badge.svg?style=flat)](https://www.versioneye.com/user/projects/53c670c8a54f97c98f000002)
 
 Humus Supervisor Module is a module for Zend Framework 2 based on supervisord.
