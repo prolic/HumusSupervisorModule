@@ -36,7 +36,6 @@ class SupervisorController extends AbstractConsoleController
     /**
      * {@inheritdoc}
      */
-
     public function connectionAction()
     {
         $this->getSupervisor(); // checks for existence
