@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "indigophp/supervisor": "dev-develop",
+        "indigophp/supervisor": ">=2.0.2",
         "zendframework/zend-servicemanager": ">=2.3.0",
         "zendframework/zend-modulemanager": ">=2.3.0",
         "zendframework/zend-mvc": ">=2.3.0",
