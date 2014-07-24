@@ -40,9 +40,11 @@ class SupervisorController extends AbstractConsoleController
     public function connectionAction()
     {
         $this->getSupervisor(); // checks for existence
+        $request = $this->getRequest();
+        /* @var $request \Zend\Console\Request */
         $config = $this->getServiceLocator()->get('Config');
-        $connectionConfig = $config['humus_supervisor_module'][$this->getRequest()->getParam('name')];
-        echo 'Connection Settings for: ' . $this->getRequest()->getParam('name') . PHP_EOL;
+        $connectionConfig = $config['humus_supervisor_module'][$request->getParam('name')];
+        echo 'Connection Settings for: ' . $request->getParam('name') . PHP_EOL;
         echo 'host: ' . $connectionConfig['host'] . PHP_EOL;
         if (isset($connectionConfig['port'])) {
             echo 'port: ' . $connectionConfig['port'] . PHP_EOL;
@@ -147,7 +149,9 @@ class SupervisorController extends AbstractConsoleController
      */
     protected function getSupervisor()
     {
-        $name = $this->getRequest()->getParam('name');
+        $request = $this->getRequest();
+        /* @var $request \Zend\Console\Request */
+        $name = $request->getParam('name');
 
         if (!$this->supervisorPluginManager->has($name)) {
             throw new Exception\RuntimeException(
