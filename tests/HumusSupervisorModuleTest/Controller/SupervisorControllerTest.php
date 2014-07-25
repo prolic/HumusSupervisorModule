@@ -19,8 +19,6 @@
 namespace HumusSupervisorModuleTest\Controller;
 
 use HumusSupervisorModule\Controller\SupervisorController;
-use HumusSupervisorModule\SupervisorManager;
-use Indigo\Supervisor\Supervisor;
 use Zend\Console\Request;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\Console\RouteMatch;
@@ -35,12 +33,12 @@ class SupervisorControllerTest extends AbstractConsoleControllerTestCase
     protected $services;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|SupervisorManager
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $manager;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|Supervisor
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $supervisor;
 
