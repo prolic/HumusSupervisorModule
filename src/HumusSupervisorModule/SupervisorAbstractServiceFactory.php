@@ -18,14 +18,12 @@
 
 namespace HumusSupervisorModule;
 
-use ArrayAccess;
-use GuzzleHttp\Client;
-use Indigo\Supervisor\Connector\GuzzleConnector;
+use Indigo\Supervisor\Connector\ZendConnector;
 use Indigo\Supervisor\Supervisor;
-use Traversable;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\ArrayUtils;
+use Zend\XmlRpc\Client as XmlRpcClient;
 
 class SupervisorAbstractServiceFactory implements AbstractFactoryInterface
 {
@@ -86,15 +84,8 @@ class SupervisorAbstractServiceFactory implements AbstractFactoryInterface
 
         $port = isset($params['port']) ? ':' . $params['port'] : '';
 
+        $connector = new ZendConnector(new XmlRpcClient('http://' . $params['host'] . $port . '/RPC2'));
 
-        $connector = new GuzzleConnector(new Client(array(
-            'base_url' => 'http://' . $params['host'] . $port
-        )));
-
-
-        /*
-        $connector = new ZendConnector(new \Zend\XmlRpc\Client($connectionSettings['host'] . $port));
-        */
         $connector->setCredentials($params['username'], $params['password']);
 
         $this->instances[$requestedName] = $supervisor = new Supervisor($connector);

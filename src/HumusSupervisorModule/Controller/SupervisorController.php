@@ -154,7 +154,7 @@ class SupervisorController extends AbstractConsoleController
 
         if (!$this->supervisorPluginManager->has($name)) {
             throw new Exception\RuntimeException(
-                $name . ' not found in SupervisorPluginManager'
+                $name . ' not found in SupervisorManager'
             );
         }
 
