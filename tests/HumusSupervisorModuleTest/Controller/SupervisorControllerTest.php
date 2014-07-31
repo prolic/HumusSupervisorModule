@@ -119,7 +119,7 @@ class SupervisorControllerTest extends AbstractConsoleControllerTestCase
 
         $this->assertResponseStatusCode(1);
         $this->assertConsoleOutputContains('HumusSupervisorModule\Exception\RuntimeException');
-        $this->assertConsoleOutputContains('invalid-supervisor not found in SupervisorPluginManager');
+        $this->assertConsoleOutputContains('invalid-supervisor not found in SupervisorManager');
     }
 
     public function testConnection()
