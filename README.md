@@ -21,7 +21,7 @@ Dependencies
  - [Zend-Servicemanager 2.3.0](https://github.com/zendframework/zf2/tree/master/library/Zend/ServiceManager)
  - [Zend-Modulemanager 2.3.0](https://github.com/zendframework/zf2/tree/master/library/Zend/ModuleManager)
  - [Zend-Mvc 2.3.0](https://github.com/zendframework/zf2/tree/master/library/Zend/Mvc)
- - [Zend-Xmlrpc 2.3.0](https://github.com/zendframework/zf2/tree/master/library/Zend/XmlRpc)
+ - [Zend-XmlRpc 2.3.0](https://github.com/zendframework/zf2/tree/master/library/Zend/XmlRpc)
  - [ZendXml 1.0.0](https://github.com/zendframework/ZendXml)
 
 Installation
