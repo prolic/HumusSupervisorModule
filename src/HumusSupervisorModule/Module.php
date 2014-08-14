@@ -28,6 +28,7 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
+use Zend\ServiceManager\ServiceManager;
 
 class Module implements
     AutoloaderProviderInterface,
@@ -59,17 +60,17 @@ class Module implements
         $serviceManager = $e->getApplication()->getServiceManager();
         /* @var $serviceManager \Zend\ServiceManager\ServiceManager */
 
-        $className = __NAMESPACE__ . '\SupervisorManager';
+        $this->initPluginManagerFactory(
+            $serviceManager,
+            __NAMESPACE__ . '\SupervisorManager',
+            'supervisor_plugin_manager'
+        );
 
-        $serviceManager->setFactory($className, function ($sm) use ($className) {
-            $config = $sm->get('Config');
-
-            return new $className(
-                new \Zend\ServiceManager\Config(
-                    $config['humus_supervisor_module']['supervisor_plugin_manager']
-                )
-            );
-        });
+        $this->initPluginManagerFactory(
+            $serviceManager,
+            __NAMESPACE__ . '\ListenerManager',
+            'listener_plugin_manager'
+        );
     }
 
     /**
@@ -118,13 +119,30 @@ class Module implements
             // Describe available commands
             'humus supervisor <name> <command>' => '',
 
-            'Available commands:',
-            array(
-                '(start|stop|processlist|pid|version|api|islocal|connection)',
-                'start/ stop the supervisor, list all processes, get supervisor pid, ',
-                'get supervisor version, get api version, check wheter the supervisor is local, ',
-                'get connection details'
-            )
+            '    Available commands:',
+            '    (start|stop|processlist|pid|version|api|islocal|connection)',
+            '',
+
+            'humus supervisor listener <name>' => '',
         );
+    }
+
+    /**
+     * @param ServiceManager $serviceManager
+     * @param string $className
+     * @param string $configKey
+     * @return void
+     */
+    protected function initPluginManagerFactory(ServiceManager $serviceManager, $className, $configKey)
+    {
+        $serviceManager->setFactory($className, function ($sm) use ($className, $configKey) {
+            $config = $sm->get('Config');
+
+            return new $className(
+                new \Zend\ServiceManager\Config(
+                    $config['humus_supervisor_module'][$configKey]
+                )
+            );
+        });
     }
 }

@@ -18,146 +18,54 @@
 
 namespace HumusSupervisorModule\Controller;
 
-use Indigo\Supervisor\Supervisor;
+use Indigo\Supervisor\Event\ListenerInterface;
 use HumusSupervisorModule\Exception;
 use Zend\Console\ColorInterface;
 use Zend\Mvc\Controller\AbstractConsoleController;
-use Zend\ServiceManager\AbstractPluginManager;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 
-class SupervisorController extends AbstractConsoleController
+class ListenerController extends AbstractConsoleController
 {
     /**
-     * @var AbstractPluginManager
+     * @var ServiceLocatorInterface
      */
-    protected $supervisorPluginManager;
+    protected $listenerPluginManager;
 
     /**
      * {@inheritdoc}
      */
-    public function connectionAction()
+    public function listenAction()
     {
-        $this->getSupervisor(); // checks for existence
-        $request = $this->getRequest();
-        /* @var $request \Zend\Console\Request */
-        $config = $this->getServiceLocator()->get('Config');
-        $connectionConfig = $config['humus_supervisor_module'][$request->getParam('name')];
-        echo 'Connection Settings for: ' . $request->getParam('name') . PHP_EOL;
-        echo 'host: ' . $connectionConfig['host'] . PHP_EOL;
-        if (isset($connectionConfig['port'])) {
-            echo 'port: ' . $connectionConfig['port'] . PHP_EOL;
-        }
-        echo 'username: ' . $connectionConfig['username'] . PHP_EOL;
-        echo 'password: ' . $connectionConfig['password'] . PHP_EOL;
+        $listener = $this->getListener();
+        $listener->listen();
     }
 
     /**
-     * @return void
+     * @param ServiceLocatorInterface $manager
      */
-    public function startAction()
+    public function setListenerManager(ServiceLocatorInterface $manager)
     {
-        $this->getSupervisor()->startAllProcesses();
+        $this->listenerPluginManager = $manager;
     }
 
     /**
-     * @return void
-     */
-    public function stopAction()
-    {
-        $this->getSuperVisor()->stopAllProcesses();
-    }
-
-    /**
-     * @return void
-     */
-    public function processlistAction()
-    {
-        $processes = $this->getSuperVisor()->getAllProcesses();
-
-        $table = new \Zend\Text\Table\Table(array('columnWidths' => array(40, 9, 14, 7, 20)));
-
-        $row = new \Zend\Text\Table\Row();
-        $row->createColumn('Process name', array('align' => 'center'));
-        $row->createColumn('State', array('align' => 'center'));
-        $row->createColumn('memory usage', array('align' => 'center'));
-        $row->createColumn('PID', array('align' => 'center'));
-        $row->createColumn('uptime', array('align' => 'center'));
-        $table->appendRow($row);
-        $table->setPadding(1);
-        foreach ($processes as $process) {
-            $payload = $process->getPayload();
-            $row = new \Zend\Text\Table\Row();
-            $row->createColumn($process->getName());
-            $row->createColumn($payload['statename']);
-            $row->createColumn((string) $process->getMemUsage());
-            $row->createColumn((string) $payload['pid']);
-            $row->createColumn((string) $payload['description']);
-            $table->appendRow($row);
-        }
-        echo $table;
-    }
-
-    /**
-     * @return void
-     */
-    public function pidAction()
-    {
-        echo $this->getSuperVisor()->getPID();
-    }
-
-    /**
-     * @return void
-     */
-    public function versionAction()
-    {
-        echo $this->getSuperVisor()->getVersion();
-    }
-
-    /**
-     * @return void
-     */
-    public function apiAction()
-    {
-        echo $this->getSuperVisor()->getAPIVersion();
-    }
-
-    /**
-     * @return void
-     */
-    public function islocalAction()
-    {
-        if ($this->getSuperVisor()->isLocal()) {
-            echo 'local';
-        } else {
-            echo 'remote';
-        }
-    }
-
-    /**
-     * @param AbstractPluginManager $pluginManager
-     */
-    public function setSupervisorPluginManager(AbstractPluginManager $pluginManager)
-    {
-        $this->supervisorPluginManager = $pluginManager;
-    }
-
-    /**
-     * @return Supervisor
+     * @return ListenerInterface
      * @throws Exception\RuntimeException
      */
-    protected function getSupervisor()
+    protected function getListener()
     {
         $request = $this->getRequest();
         /* @var $request \Zend\Console\Request */
         $name = $request->getParam('name');
 
-        if (!$this->supervisorPluginManager->has($name)) {
+        if (!$this->listenerPluginManager->has($name)) {
             throw new Exception\RuntimeException(
-                $name . ' not found in SupervisorManager'
+                $name . ' not found in ListenerManager'
             );
         }
 
-        return $this->supervisorPluginManager->get($name);
+        return $this->listenerPluginManager->get($name);
     }
 }

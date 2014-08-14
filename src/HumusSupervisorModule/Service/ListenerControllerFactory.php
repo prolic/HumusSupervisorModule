@@ -18,11 +18,11 @@
 
 namespace HumusSupervisorModule\Service;
 
-use HumusSupervisorModule\Controller\SupervisorController;
+use HumusSupervisorModule\Controller\ListenerController;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class SupervisorControllerFactory implements FactoryInterface
+class ListenerControllerFactory implements FactoryInterface
 {
     /**
      * Create service
@@ -35,10 +35,10 @@ class SupervisorControllerFactory implements FactoryInterface
         /* @var $serviceLocator \Zend\Mvc\Controller\ControllerManager */
         $sm = $serviceLocator->getServiceLocator();
 
-        $pluginManager = $sm->get('HumusSupervisorModule\SupervisorManager');
+        $pluginManager = $sm->get('HumusSupervisorModule\\ListenerManager');
 
-        $controller = new SupervisorController();
-        $controller->setSupervisorPluginManager($pluginManager);
+        $controller = new ListenerController();
+        $controller->setListenerManager($pluginManager);
 
         return $controller;
     }

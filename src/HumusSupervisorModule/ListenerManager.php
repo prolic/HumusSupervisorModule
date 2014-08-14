@@ -18,12 +18,12 @@
 
 namespace HumusSupervisorModule;
 
-use Indigo\Supervisor\Supervisor;
+use Indigo\Supervisor\Event\ListenerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ConfigInterface;
 
-class SupervisorManager extends AbstractPluginManager
+class ListenerManager extends AbstractPluginManager
 {
     /**
      * Validate the plugin
@@ -37,13 +37,13 @@ class SupervisorManager extends AbstractPluginManager
      */
     public function validatePlugin($plugin)
     {
-        if ($plugin instanceof Supervisor) {
+        if ($plugin instanceof ListenerInterface) {
             // we're okay
             return;
         }
 
         throw new Exception\RuntimeException(sprintf(
-            'Plugin of type %s is invalid; must be an instance of Indigo\Supervisor\Supervisor',
+            'Plugin of type %s is invalid; must be an instance of Indigo\Supervisor\Event\ListenerInterface',
             (is_object($plugin) ? get_class($plugin) : gettype($plugin))
         ));
     }

@@ -22,14 +22,14 @@ use Indigo\Supervisor\Supervisor;
 use HumusSupervisorModule\Exception;
 use Zend\Console\ColorInterface;
 use Zend\Mvc\Controller\AbstractConsoleController;
-use Zend\ServiceManager\AbstractPluginManager;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 
 class SupervisorController extends AbstractConsoleController
 {
     /**
-     * @var AbstractPluginManager
+     * @var ServiceLocatorInterface
      */
     protected $supervisorPluginManager;
 
@@ -135,9 +135,9 @@ class SupervisorController extends AbstractConsoleController
     }
 
     /**
-     * @param AbstractPluginManager $pluginManager
+     * @param ServiceLocatorInterface $pluginManager
      */
-    public function setSupervisorPluginManager(AbstractPluginManager $pluginManager)
+    public function setSupervisorPluginManager(ServiceLocatorInterface $pluginManager)
     {
         $this->supervisorPluginManager = $pluginManager;
     }
