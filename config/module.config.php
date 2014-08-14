@@ -22,8 +22,10 @@ return array(
     'humus_supervisor_module' => array(
         'supervisor_plugin_manager' => array(
             'abstract_factories' => array(
-                __NAMESPACE__ . '\\SupervisorAbstractServiceFactory'
+                __NAMESPACE__ . '\\SupervisorAbstractServiceFactory',
             )
+        ),
+        'listener_plugin_manager' => array(
         )
     ),
     'console' => array(
@@ -37,12 +39,22 @@ return array(
                         )
                     )
                 ),
+                'humus_supervisor_module-listener' => array(
+                    'options' => array(
+                        'route'    => 'humus supervisor listener <name>',
+                        'defaults' => array(
+                            'controller' => __NAMESPACE__ . '\\Controller\\Listener',
+                            'action' => 'listen'
+                        )
+                    )
+                ),
             )
         )
     ),
     'controllers' => array(
         'factories' => array(
-            __NAMESPACE__ . '\\Controller\\Supervisor' => __NAMESPACE__ . '\\Service\\SupervisorControllerFactory'
+            __NAMESPACE__ . '\\Controller\\Supervisor' => __NAMESPACE__ . '\\Service\\SupervisorControllerFactory',
+            __NAMESPACE__ . '\\Controller\\Listener' => __NAMESPACE__ . '\\Service\\ListenerControllerFactory',
         )
     ),
 );
