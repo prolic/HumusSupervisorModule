@@ -17,7 +17,7 @@ Dependencies
 
  - PHP 5.3.23
  - [Indigo Supervisor](https://github.com/indigophp/supervisor)
- - [supervisord](http://www.supervisdord.com)
+ - [supervisord](http://supervisord.org/)
  - [Zend-Servicemanager 2.3.0](https://github.com/zendframework/zf2/tree/master/library/Zend/ServiceManager)
  - [Zend-Modulemanager 2.3.0](https://github.com/zendframework/zf2/tree/master/library/Zend/ModuleManager)
  - [Zend-Mvc 2.3.0](https://github.com/zendframework/zf2/tree/master/library/Zend/Mvc)
