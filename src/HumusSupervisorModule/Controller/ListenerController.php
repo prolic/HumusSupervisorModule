@@ -38,7 +38,16 @@ class ListenerController extends AbstractConsoleController
      */
     public function listenAction()
     {
-        $listener = $this->getListener();
+        $request = $this->getRequest();
+        /* @var $request \Zend\Console\Request */
+        $name = $request->getParam('name');
+
+        if (!$this->listenerPluginManager->has($name)) {
+            $this->getConsole()->writeLine($name . ' not found in ListenerManager',ColorInterface::RED);
+            return $this->getResponse()->setErrorLevel(1);
+        }
+
+        $listener = $this->listenerPluginManager->get($name);
         $listener->listen();
     }
 
@@ -48,24 +57,5 @@ class ListenerController extends AbstractConsoleController
     public function setListenerManager(ServiceLocatorInterface $manager)
     {
         $this->listenerPluginManager = $manager;
-    }
-
-    /**
-     * @return ListenerInterface
-     * @throws Exception\RuntimeException
-     */
-    protected function getListener()
-    {
-        $request = $this->getRequest();
-        /* @var $request \Zend\Console\Request */
-        $name = $request->getParam('name');
-
-        if (!$this->listenerPluginManager->has($name)) {
-            throw new Exception\RuntimeException(
-                $name . ' not found in ListenerManager'
-            );
-        }
-
-        return $this->listenerPluginManager->get($name);
     }
 }
