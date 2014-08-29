@@ -43,7 +43,7 @@ class ListenerController extends AbstractConsoleController
         $name = $request->getParam('name');
 
         if (!$this->listenerPluginManager->has($name)) {
-            $this->getConsole()->writeLine($name . ' not found in ListenerManager',ColorInterface::RED);
+            $this->getConsole()->writeLine($name . ' not found in ListenerManager', ColorInterface::RED);
             return $this->getResponse()->setErrorLevel(1);
         }
 
