@@ -8,7 +8,7 @@ Humus Supervisor Module
 [![Latest Stable Version](https://poser.pugx.org/prolic/humus-supervisor-module/v/stable.svg)](https://packagist.org/packages/prolic/humus-supervisor-module)
 [![Latest Unstable Version](https://poser.pugx.org/prolic/humus-supervisor-module/v/unstable.svg)](https://packagist.org/packages/prolic/humus-supervisor-module)
 [![Total Downloads](https://poser.pugx.org/prolic/humus-supervisor-module/downloads.svg)](https://packagist.org/packages/prolic/humus-supervisor-module)
-[![Dependency Status](https://www.versioneye.com/user/projects/53c670c8a54f97c98f000002/badge.svg?style=flat)](https://www.versioneye.com/user/projects/53c670c8a54f97c98f000002)
+[![Dependency Status](https://www.versioneye.com/php/prolic:humus-supervisor-module/0.2.0/badge.svg)](https://www.versioneye.com/php/prolic:humus-supervisor-module)
 
 Humus Supervisor Module is a module for Zend Framework 2 based on supervisord.
 
